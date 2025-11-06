@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Linear en Binary zoeken</title>
+<style>
+body{font-family:sans-serif;padding:20px;}
+input,button{margin:5px;}
+</style>
+</head>
+<body>
+
+<h2>Linear vs Binary zoeken</h2>
+
+Array size: <input id="size" type="number" value="10000" min="1"><br>
+Target: <input id="target" type="text"><br>
+<button id="run">Runnen</button>
+
+<div id="results"></div>
+
+<script>
+function makeArray(n){return Array.from({length:n},(_,i)=>i+1);}
+function linearSearch(arr,t){for(let i=0;i<arr.length;i++) if(arr[i]===t) return i; return -1;}
+function binarySearch(arr,t){let l=0,h=arr.length-1; while(l<=h){let m=Math.floor((l+h)/2); if(arr[m]===t) return m; else if(arr[m]<t) l=m+1; else h=m-1;} return -1;}
+function time(fn,arr,t){let s=performance.now(); let r=fn(arr,t); return {r,rms:(performance.now()-s).toFixed(4)};}
+
+document.getElementById('run').onclick=()=>{
+  const n=parseInt(document.getElementById('size').value);
+  const arr=makeArray(n);
+  
+  const input=document.getElementById('target').value.trim();
+  let t;
+  if(input.toLowerCase()==='present') t=arr[Math.floor(Math.random()*n)];
+  else if(input.toLowerCase()==='absent') t=n+1;
+  else t=parseInt(input);
+
+  results.innerHTML=`Array size: ${n}<br>Target: ${t}<br>`;
+
+  const l=time(linearSearch,arr,t);
+  results.innerHTML+=`Linear Search: ${l.r>=0?'Found at index '+l.r:'Not found'} in ${l.rms} ms<br>`;
+
+  const b=time(binarySearch,arr,t);
+  results.innerHTML+=`Binary Search: ${b.r>=0?'Found at index '+b.r:'Not found'} in ${b.rms} ms<br>`;
+}
+</script>
+
+</body>
+</html>
